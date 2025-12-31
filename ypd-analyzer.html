@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YPD 청소년 선수 발달 분석기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #8892b0;
+            font-size: 1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #00d9ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #ccd6f6;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #00d9ff;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group small {
+            color: #8892b0;
+            font-size: 0.75rem;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .gender-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .gender-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #8892b0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .gender-btn.active {
+            background: linear-gradient(135deg, #00d9ff, #00ff88);
+            color: #1a1a2e;
+            border-color: transparent;
+            font-weight: 600;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #00d9ff, #00ff88);
+            color: #1a1a2e;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+        }
+
+        .results-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-card h3 {
+            font-size: 1.1rem;
+            color: #00d9ff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .phv-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .phv-item {
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .phv-item .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .phv-item .label {
+            font-size: 0.85rem;
+            color: #8892b0;
+            margin-top: 5px;
+        }
+
+        .maturity-status {
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .maturity-status.early {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.1));
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+        }
+
+        .maturity-status.average {
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(0, 217, 255, 0.1));
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            color: #00d9ff;
+        }
+
+        .maturity-status.late {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.1));
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+        }
+
+        .ypd-timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            top: -10px;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #00d9ff, #00ff88);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .timeline-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #8892b0;
+        }
+
+        .training-priorities {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .priority-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+
+        .priority-item.critical {
+            border-color: #ff6b6b;
+        }
+
+        .priority-item.high {
+            border-color: #ffa502;
+        }
+
+        .priority-item.medium {
+            border-color: #00d9ff;
+        }
+
+        .priority-item.low {
+            border-color: #00ff88;
+        }
+
+        .priority-item .name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .priority-item .importance {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sport-context {
+            background: rgba(0, 217, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .sport-context h4 {
+            color: #00d9ff;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .sport-context p {
+            color: #ccd6f6;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .predicted-height {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .predicted-height .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .predicted-height .label {
+            color: #8892b0;
+            margin-top: 5px;
+        }
+
+        .info-text {
+            font-size: 0.85rem;
+            color: #8892b0;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .plyo-phase-banner {
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .plyo-phase-banner.pre-phv {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.05));
+            border: 2px solid rgba(0, 255, 136, 0.4);
+        }
+
+        .plyo-phase-banner.circa-phv {
+            background: linear-gradient(135deg, rgba(255, 165, 2, 0.2), rgba(255, 107, 107, 0.1));
+            border: 2px solid rgba(255, 165, 2, 0.5);
+        }
+
+        .plyo-phase-banner.post-phv {
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.15), rgba(0, 217, 255, 0.05));
+            border: 2px solid rgba(0, 217, 255, 0.4);
+        }
+
+        .plyo-phase-banner .phase-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .plyo-phase-banner .phase-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .plyo-phase-banner .phase-subtitle {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .plyo-phase-banner.pre-phv .phase-title { color: #00ff88; }
+        .plyo-phase-banner.circa-phv .phase-title { color: #ffa502; }
+        .plyo-phase-banner.post-phv .phase-title { color: #00d9ff; }
+
+        .plyo-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .plyo-section h4 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .plyo-section.physio h4 { color: #a29bfe; }
+        .plyo-section.goal h4 { color: #00ff88; }
+        .plyo-section.do h4 { color: #00d9ff; }
+        .plyo-section.dont h4 { color: #ff6b6b; }
+        .plyo-section.exercises h4 { color: #ffa502; }
+        .plyo-section.tips h4 { color: #fd79a8; }
+
+        .plyo-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .plyo-list li {
+            padding: 8px 0 8px 25px;
+            position: relative;
+            color: #ccd6f6;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .plyo-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 14px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.6;
+        }
+
+        .plyo-list.do li::before { background: #00d9ff; }
+        .plyo-list.dont li::before { background: #ff6b6b; }
+        .plyo-list.neutral li::before { background: #8892b0; }
+
+        .plyo-key-point {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid;
+            padding: 12px 15px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .plyo-key-point.warning {
+            border-color: #ffa502;
+            background: rgba(255, 165, 2, 0.1);
+            color: #ffd93d;
+        }
+
+        .plyo-key-point.success {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+        }
+
+        .plyo-key-point.info {
+            border-color: #00d9ff;
+            background: rgba(0, 217, 255, 0.1);
+            color: #00d9ff;
+        }
+
+        .freq-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+        }
+
+        .freq-badge.low {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .freq-badge.medium {
+            background: rgba(255, 165, 2, 0.2);
+            color: #ffa502;
+        }
+
+        .freq-badge.high {
+            background: rgba(0, 217, 255, 0.2);
+            color: #00d9ff;
+        }
+
+        .warning-box {
+            background: rgba(255, 165, 2, 0.15);
+            border: 1px solid rgba(255, 165, 2, 0.3);
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #ffa502;
+        }
+
+        .development-stage {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stage-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stage-card .stage-name {
+            font-size: 0.85rem;
+            color: #8892b0;
+            margin-bottom: 5px;
+        }
+
+        .stage-card .stage-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ccd6f6;
+        }
+
+        .stage-card.current {
+            background: rgba(0, 217, 255, 0.15);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .stage-card.current .stage-value {
+            color: #00d9ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏃 YPD 청소년 선수 발달 분석기</h1>
+            <p>Youth Physical Development Model 기반 맞춤형 훈련 가이드</p>
+        </header>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2>📋 선수 정보 입력</h2>
+                
+                <div class="form-group">
+                    <label>이름</label>
+                    <input type="text" id="name" placeholder="선수 이름">
+                </div>
+
+                <div class="form-group">
+                    <label>성별</label>
+                    <div class="gender-toggle">
+                        <button class="gender-btn active" data-gender="male" onclick="setGender('male')">남자</button>
+                        <button class="gender-btn" data-gender="female" onclick="setGender('female')">여자</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>생년월일</label>
+                    <input type="date" id="birthdate">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>신장 (cm)</label>
+                        <input type="number" id="height" placeholder="170" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>앉은키 (cm)</label>
+                        <input type="number" id="sittingHeight" placeholder="85" step="0.1">
+                        <small>의자 없이 바닥에서 측정</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>체중 (kg)</label>
+                    <input type="number" id="weight" placeholder="60" step="0.1">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>아버지 키 (cm)</label>
+                        <input type="number" id="fatherHeight" placeholder="175" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>어머니 키 (cm)</label>
+                        <input type="number" id="motherHeight" placeholder="163" step="0.1">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>종목</label>
+                        <select id="sport">
+                            <option value="soccer">축구</option>
+                            <option value="basketball">농구</option>
+                            <option value="volleyball">배구</option>
+                            <option value="baseball">야구</option>
+                            <option value="swimming">수영</option>
+                            <option value="athletics">육상</option>
+                            <option value="tennis">테니스</option>
+                            <option value="taekwondo">태권도</option>
+                            <option value="gymnastics">체조</option>
+                            <option value="other">기타</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>포지션</label>
+                        <input type="text" id="position" placeholder="예: 미드필더">
+                    </div>
+                </div>
+
+                <button class="analyze-btn" onclick="analyze()">🔍 분석하기</button>
+            </div>
+
+            <div class="results-section">
+                <div class="result-card hidden" id="phvResult">
+                    <h3>📊 성장 성숙도 분석</h3>
+                    <div class="phv-display">
+                        <div class="phv-item">
+                            <div class="value" id="currentAge">-</div>
+                            <div class="label">현재 만나이</div>
+                        </div>
+                        <div class="phv-item">
+                            <div class="value" id="maturityOffset">-</div>
+                            <div class="label">Maturity Offset</div>
+                        </div>
+                        <div class="phv-item">
+                            <div class="value" id="predictedPHV">-</div>
+                            <div class="label">예상 PHV 나이</div>
+                        </div>
+                        <div class="phv-item">
+                            <div class="value" id="percentAdultHeight">-</div>
+                            <div class="label">예상 성인키 대비 %</div>
+                        </div>
+                    </div>
+
+                    <div class="maturity-status" id="maturityStatus"></div>
+
+                    <div class="development-stage" id="developmentStage">
+                    </div>
+
+                    <div class="predicted-height">
+                        <div class="value" id="predictedAdultHeight">-</div>
+                        <div class="label">예상 성인 키 (Mid-Parent Method)</div>
+                    </div>
+
+                    <div class="info-text">
+                        * PHV(Peak Height Velocity)는 청소년기 최대 성장 속도 시점을 의미합니다.<br>
+                        * Maturity Offset이 음수면 PHV 도달 전, 양수면 PHV 통과 후입니다.<br>
+                        * Mirwald et al.(2002) 공식 기반으로 계산됩니다.
+                    </div>
+                </div>
+
+                <div class="result-card hidden" id="ypdResult">
+                    <h3>🎯 YPD 기반 훈련 우선순위</h3>
+                    
+                    <div class="ypd-timeline">
+                        <div class="timeline-labels">
+                            <span>유아기</span>
+                            <span>아동기</span>
+                            <span>청소년기</span>
+                            <span>성인기</span>
+                        </div>
+                        <div class="timeline-bar">
+                            <div class="timeline-marker" id="ageMarker">-</div>
+                        </div>
+                        <div class="timeline-labels">
+                            <span>2세</span>
+                            <span>7세</span>
+                            <span>12세</span>
+                            <span>17세</span>
+                            <span>21+</span>
+                        </div>
+                    </div>
+
+                    <div class="training-priorities" id="trainingPriorities">
+                    </div>
+
+                    <div class="warning-box hidden" id="phvWarning">
+                        ⚠️ PHV 시기(급성장기)에는 근골격계 부상 위험이 증가합니다. 훈련 강도와 볼륨 조절에 주의하세요.
+                    </div>
+                </div>
+
+                <div class="result-card hidden" id="plyoResult">
+                    <h3>⚡ PHV 기반 플라이오메트릭 가이드</h3>
+                    <div id="plyoPhase"></div>
+                    <div id="plyoContent"></div>
+                </div>
+
+                <div class="result-card hidden" id="recommendationResult">
+                    <h3>💡 맞춤형 훈련 권장사항</h3>
+                    <div id="recommendations"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedGender = 'male';
+
+        function setGender(gender) {
+            selectedGender = gender;
+            document.querySelectorAll('.gender-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.gender === gender);
+            });
+        }
+
+        function calculateAge(birthdate) {
+            const today = new Date();
+            const birth = new Date(birthdate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            
+            // 소수점 나이 계산
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+            const birthDayOfYear = Math.floor((birth - new Date(birth.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+            
+            const decimalAge = age + (dayOfYear - birthDayOfYear) / 365.25;
+            return decimalAge;
+        }
+
+        function calculateMaturityOffset(age, height, sittingHeight, weight, gender) {
+            // Mirwald et al. (2002) equation
+            const legLength = height - sittingHeight;
+            const heightWeightRatio = (weight / height) * 100;
+            
+            let offset;
+            
+            if (gender === 'male') {
+                // Boys equation
+                offset = -9.236 
+                    + (0.0002708 * legLength * sittingHeight)
+                    - (0.001663 * age * legLength)
+                    + (0.007216 * age * sittingHeight)
+                    + (0.02292 * heightWeightRatio);
+            } else {
+                // Girls equation
+                offset = -9.376
+                    + (0.0001882 * legLength * sittingHeight)
+                    - (0.0022 * age * legLength)
+                    + (0.005841 * age * sittingHeight)
+                    - (0.002658 * age * weight)
+                    + (0.07693 * heightWeightRatio);
+            }
+            
+            return offset;
+        }
+
+        function calculatePredictedAdultHeight(gender, fatherHeight, motherHeight) {
+            // Mid-Parent Method
+            const midParentHeight = (fatherHeight + motherHeight) / 2;
+            
+            if (gender === 'male') {
+                return midParentHeight + 6.5; // cm
+            } else {
+                return midParentHeight - 6.5; // cm
+            }
+        }
+
+        function getMaturityStatus(offset, gender) {
+            // 일반적인 PHV 나이: 남자 14세, 여자 12세
+            const avgPHVAge = gender === 'male' ? 14.0 : 12.0;
+            
+            if (offset < -1.5) {
+                return { status: 'late', text: '늦은 성숙 (Late Maturer)', class: 'late' };
+            } else if (offset > 1.5) {
+                return { status: 'early', text: '빠른 성숙 (Early Maturer)', class: 'early' };
+            } else {
+                return { status: 'average', text: '평균 성숙 (Average Maturer)', class: 'average' };
+            }
+        }
+
+        function getYPDTrainingPriorities(age, offset, gender) {
+            const priorities = [];
+            
+            // YPD Model based on age and maturity status
+            // PHV 기준으로 훈련 우선순위 결정
+            
+            // Pre-PHV (-4 to -1)
+            if (offset < -1) {
+                // FMS (기본 움직임 기술) - 높은 우선순위
+                priorities.push({ name: 'FMS (기본 움직임 기술)', importance: '매우 높음', level: 'critical', 
+                    description: '달리기, 점프, 던지기 등 기초 움직임 패턴 완성' });
+                
+                // Mobility
+                priorities.push({ name: 'Mobility (유연성)', importance: '중간', level: 'medium',
+                    description: '관절 가동범위 확보' });
+                
+                // Agility
+                priorities.push({ name: 'Agility (민첩성)', importance: '높음', level: 'high',
+                    description: '방향전환, 반응 속도 발달' });
+                
+                // Speed
+                priorities.push({ name: 'Speed (스피드)', importance: '중간-높음', level: 'medium',
+                    description: '신경계 발달 시기, 빠른 움직임 학습' });
+                
+                // Power
+                priorities.push({ name: 'Power (파워)', importance: '중간', level: 'medium',
+                    description: '점프, 던지기 등 폭발적 움직임' });
+                
+                // Strength
+                priorities.push({ name: 'Strength (근력)', importance: '중간', level: 'medium',
+                    description: '자체중량 운동 위주' });
+                    
+            }
+            // Around PHV (-1 to +1)
+            else if (offset >= -1 && offset <= 1) {
+                priorities.push({ name: 'Strength (근력)', importance: '매우 높음', level: 'critical',
+                    description: '호르몬 변화 활용, 근력 발달 적기' });
+                    
+                priorities.push({ name: 'Power (파워)', importance: '매우 높음', level: 'critical',
+                    description: '폭발적 파워 발달의 최적기' });
+                    
+                priorities.push({ name: 'Speed (스피드)', importance: '높음', level: 'high',
+                    description: '최대 속도 발달' });
+                    
+                priorities.push({ name: 'Agility (민첩성)', importance: '높음', level: 'high',
+                    description: '스포츠 특화 민첩성' });
+                    
+                priorities.push({ name: 'Hypertrophy (근비대)', importance: '중간-높음', level: 'medium',
+                    description: '근육량 증가 시작 시기' });
+                    
+                priorities.push({ name: 'Endurance & MC (지구력)', importance: '중간', level: 'medium',
+                    description: '유산소 기초 체력' });
+            }
+            // Post-PHV (+1 이상)
+            else {
+                priorities.push({ name: 'Hypertrophy (근비대)', importance: '매우 높음', level: 'critical',
+                    description: '근육량 증가 최적기' });
+                    
+                priorities.push({ name: 'Strength (근력)', importance: '높음', level: 'high',
+                    description: '최대 근력 발달' });
+                    
+                priorities.push({ name: 'Power (파워)', importance: '높음', level: 'high',
+                    description: '스포츠 특화 파워' });
+                    
+                priorities.push({ name: 'Endurance & MC (지구력)', importance: '매우 높음', level: 'critical',
+                    description: '유산소 능력 및 대사 컨디셔닝' });
+                    
+                priorities.push({ name: 'Speed (스피드)', importance: '중간', level: 'medium',
+                    description: '최대 속도 유지' });
+                    
+                priorities.push({ name: 'Agility (민첩성)', importance: '중간', level: 'medium',
+                    description: '종목 특화 민첩성' });
+            }
+            
+            return priorities;
+        }
+
+        function getSportSpecificAdvice(sport, position, offset) {
+            const advice = {
+                soccer: {
+                    title: '축구',
+                    prePhv: '기술 훈련(드리블, 패스, 슈팅)과 게임 이해력 발달에 집중하세요. 소규모 게임(SSG)을 통한 인지 발달이 중요합니다.',
+                    duringPhv: '급성장기에는 유연성과 핵심 안정성 훈련이 필수입니다. 오스굿-슐라터병 등 성장판 관련 부상에 주의하세요.',
+                    postPhv: '체력(지구력, 근력)과 파워 발달에 집중할 수 있습니다. 전술적 이해와 포지션별 특화 훈련을 강화하세요.'
+                },
+                basketball: {
+                    title: '농구',
+                    prePhv: '볼 핸들링, 슈팅 폼, 기본 움직임 패턴에 집중하세요. 점프 착지 기술이 중요합니다.',
+                    duringPhv: '급성장으로 인한 협응력 저하에 주의하세요. 무릎 부상 예방을 위한 착지 훈련이 필수입니다.',
+                    postPhv: '수직 점프력, 스피드, 근력 발달에 집중하세요. 포지션별 특화 훈련을 강화할 수 있습니다.'
+                },
+                volleyball: {
+                    title: '배구',
+                    prePhv: '기본 기술(서브, 리시브, 토스)과 움직임 패턴에 집중하세요.',
+                    duringPhv: '어깨와 무릎 관절 관리가 중요합니다. 점프 부하를 적절히 조절하세요.',
+                    postPhv: '점프력과 파워 발달, 스파이크 위력 향상에 집중할 수 있습니다.'
+                },
+                baseball: {
+                    title: '야구',
+                    prePhv: '던지기 메커니즘, 타격 폼, 수비 기본기에 집중하세요. 투구 수 제한이 중요합니다.',
+                    duringPhv: '어깨와 팔꿈치 부상 위험이 높습니다. 투구 수와 강도 관리가 필수입니다.',
+                    postPhv: '파워(타격력, 송구력)와 특화 체력 발달에 집중할 수 있습니다.'
+                },
+                swimming: {
+                    title: '수영',
+                    prePhv: '스트로크 기술과 수중 감각 발달에 집중하세요. 다양한 영법을 경험하세요.',
+                    duringPhv: '어깨 과사용 부상에 주의하세요. 훈련량 조절이 필요합니다.',
+                    postPhv: '지구력과 파워 훈련 강도를 높일 수 있습니다. 종목 특화 훈련을 강화하세요.'
+                },
+                athletics: {
+                    title: '육상',
+                    prePhv: '다양한 운동 경험과 기본 움직임 패턴에 집중하세요. 조기 전문화를 피하세요.',
+                    duringPhv: '성장판 부상(무릎, 발목)에 주의하세요. 훈련량 조절이 중요합니다.',
+                    postPhv: '종목별(단거리/장거리/도약/투척) 특화 훈련을 본격적으로 시작할 수 있습니다.'
+                },
+                tennis: {
+                    title: '테니스',
+                    prePhv: '라켓 기술과 풋워크에 집중하세요. 다양한 스트로크를 경험하세요.',
+                    duringPhv: '어깨, 손목, 허리 부상에 주의하세요. 훈련량 관리가 필요합니다.',
+                    postPhv: '파워와 지구력 발달에 집중할 수 있습니다. 경기 전술을 강화하세요.'
+                },
+                taekwondo: {
+                    title: '태권도',
+                    prePhv: '기본 기술과 유연성에 집중하세요. 다양한 발차기 기술을 습득하세요.',
+                    duringPhv: '고관절과 무릎 부상에 주의하세요. 유연성 유지가 중요합니다.',
+                    postPhv: '파워와 스피드 발달에 집중할 수 있습니다. 경기력 향상 훈련을 강화하세요.'
+                },
+                gymnastics: {
+                    title: '체조',
+                    prePhv: '기본 기술과 유연성, 체조 특화 근력에 집중하세요.',
+                    duringPhv: '급성장으로 인한 기술 퇴보가 있을 수 있습니다. 부상 예방에 집중하세요.',
+                    postPhv: '파워와 난이도 향상에 집중할 수 있습니다.'
+                },
+                other: {
+                    title: '기타 종목',
+                    prePhv: '기본 움직임 기술과 종목 특화 기술에 집중하세요.',
+                    duringPhv: '급성장기 부상 예방과 유연성 유지가 중요합니다.',
+                    postPhv: '체력과 파워 발달에 집중할 수 있습니다.'
+                }
+            };
+
+            const sportAdvice = advice[sport] || advice.other;
+            let phaseAdvice;
+            
+            if (offset < -1) {
+                phaseAdvice = sportAdvice.prePhv;
+            } else if (offset <= 1) {
+                phaseAdvice = sportAdvice.duringPhv;
+            } else {
+                phaseAdvice = sportAdvice.postPhv;
+            }
+
+            return { title: sportAdvice.title, advice: phaseAdvice };
+        }
+
+        function getPlyometricGuide(offset) {
+            // Pre-PHV (offset < -1, roughly more than 1 year before PHV)
+            if (offset < -1) {
+                return {
+                    phase: 'pre-phv',
+                    icon: '🌱',
+                    title: 'Pre-PHV: 준비 단계',
+                    subtitle: '"플라이오메트릭을 할 수 있는 몸 만들기"',
+                    physiology: [
+                        '뼈 성장 속도가 비교적 느리고 안정적',
+                        '건·인대가 균형 있게 적응하는 시기',
+                        '신경계 가소성이 높음 (코디네이션 황금기)'
+                    ],
+                    goals: [
+                        '❌ 건 강성(stiffness) 직접 자극은 목표 아님',
+                        '✅ 착지 패턴, 탄성 사용 "기술" 학습',
+                        '✅ 저강도 탄성 자극에 익숙해지기',
+                        '✅ 발-무릎-고관절 정렬 습득'
+                    ],
+                    doList: [
+                        '라인 점프 (Line Hops)',
+                        '로프 스킵 (Jump Rope)',
+                        '낮은 스텝에서 조용한 착지 연습',
+                        '양발/한발 균형 착지',
+                        '리듬 점프 (높이보다 리듬 강조)'
+                    ],
+                    dontList: [
+                        '고강도 플라이오메트릭',
+                        'Depth Jump',
+                        '연속 바운딩',
+                        '최대 높이/거리 점프'
+                    ],
+                    keyPoints: [
+                        '접지 시간 인식하기',
+                        '발-무릎-고관절 정렬 유지',
+                        '"높이"보다 "리듬"에 집중',
+                        '소리 없이 부드럽게 착지하기'
+                    ],
+                    frequency: '주 2-3회',
+                    frequencyClass: 'low',
+                    mainMessage: '이 시기 플라이오메트릭은 인대·건 발달이 목적이 아닙니다. "플라이오메트릭을 할 수 있는 몸 만들기" 단계입니다.',
+                    messageType: 'success'
+                };
+            }
+            // Circa-PHV (offset -1 to +1, within about 1 year of PHV)
+            else if (offset >= -1 && offset <= 1) {
+                return {
+                    phase: 'circa-phv',
+                    icon: '⚠️',
+                    title: 'Circa-PHV: 주의 단계',
+                    subtitle: '"가장 조심해야 하는 시기"',
+                    physiology: [
+                        '🚀 뼈 성장 속도 급격히 증가',
+                        '⬇️ 근육·건 적응 속도 상대적 저하',
+                        '⬆️ 건 긴장도 증가, 유연성 감소',
+                        '⚠️ 성장통, 견열성 손상 위험 증가',
+                        '⚠️ 슬개건·아킬레스건 부하 증가'
+                    ],
+                    goals: [
+                        '✅ 건을 보호하면서 성장기 지나가기',
+                        '✅ 플라이오메트릭 "유지" 수준만',
+                        '✅ 기본 근력 훈련에 집중',
+                        '❌ 건 강성 자극은 이 시기가 아님'
+                    ],
+                    doList: [
+                        '낮은 높이에서 Single Jump',
+                        '부드러운 착지 연습',
+                        '등척성(Isometric) 운동',
+                        '느린 편심성(Slow Eccentric) 운동',
+                        '기본 스트렝스 훈련'
+                    ],
+                    dontList: [
+                        '고강도 플라이오메트릭 (Depth Jump)',
+                        '연속 바운딩 (Bounding)',
+                        '높은 낙하 + 짧은 접지 시간',
+                        '멀리뛰기 최대 거리 시도',
+                        '고빈도 점프 훈련'
+                    ],
+                    keyPoints: [
+                        '볼륨 ↓ / 강도 ↓',
+                        '빈도 ↓ (주 1회 이하)',
+                        '"잘 뛰기"보다 "잘 착지하기"',
+                        '통증 시 즉시 중단'
+                    ],
+                    frequency: '주 1회 이하',
+                    frequencyClass: 'medium',
+                    mainMessage: '이 시기는 "건을 키우는 시기"가 아닙니다. "건을 보호하면서 성장 지나가는 시기"입니다. 오스굿-슐라터병, 세버병 등 성장판 관련 부상에 특히 주의하세요.',
+                    messageType: 'warning'
+                };
+            }
+            // Post-PHV (offset > 1, more than 1 year after PHV)
+            else {
+                return {
+                    phase: 'post-phv',
+                    icon: '⭐',
+                    title: 'Post-PHV: 최적 단계',
+                    subtitle: '"인대·건 자극 플라이오메트릭의 최적기"',
+                    physiology: [
+                        '📊 신장 성장 속도 안정화',
+                        '💪 호르몬 환경 변화 (테스토스테론 ↑)',
+                        '⬆️ 건 강성, 단면적 증가 가능',
+                        '⬆️ 에너지 저장·반환 능력 향상 가능'
+                    ],
+                    goals: [
+                        '✅ 건 Stiffness(강성) 증가',
+                        '✅ 힘 전달 효율 향상',
+                        '✅ SSC(신장-단축 주기) 효율 개선',
+                        '✅ 폭발적 파워 발달'
+                    ],
+                    doList: [
+                        'Hurdle Jump (허들 점프)',
+                        'Bounding (바운딩)',
+                        'Depth Jump (점진적 높이 증가)',
+                        'Box Jump (다양한 높이)',
+                        'Single Leg Hop 시리즈',
+                        '수직·수평 반발력 훈련'
+                    ],
+                    dontList: [
+                        '준비 없이 고강도 시작',
+                        '과도한 볼륨 (피로 누적)',
+                        '부적절한 착지 기술',
+                        '회복 없이 연속 세션'
+                    ],
+                    keyPoints: [
+                        '짧은 접지 시간(Ground Contact Time) 강조',
+                        '수직·수평 반발력 모두 훈련',
+                        '점진적 볼륨·강도 증가',
+                        '적정 빈도로 반복 노출'
+                    ],
+                    frequency: '주 2-3회',
+                    frequencyClass: 'high',
+                    mainMessage: 'PHV 이후 플라이오메트릭은 건 강성 증가와 SSC 효율 개선에 가장 효과적입니다. 본격적인 파워 발달 훈련을 시작할 수 있습니다!',
+                    messageType: 'info'
+                };
+            }
+        }
+
+        function renderPlyometricGuide(offset) {
+            const guide = getPlyometricGuide(offset);
+            
+            // Phase banner
+            document.getElementById('plyoPhase').innerHTML = `
+                <div class="plyo-phase-banner ${guide.phase}">
+                    <div class="phase-icon">${guide.icon}</div>
+                    <div class="phase-title">${guide.title}</div>
+                    <div class="phase-subtitle">${guide.subtitle}</div>
+                </div>
+            `;
+
+            // Content sections
+            let contentHtml = `
+                <div class="plyo-section physio">
+                    <h4>🔬 생리적 특징</h4>
+                    <ul class="plyo-list neutral">
+                        ${guide.physiology.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="plyo-section goal">
+                    <h4>🎯 훈련 목표</h4>
+                    <ul class="plyo-list neutral">
+                        ${guide.goals.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="plyo-section do">
+                    <h4>✅ 권장 운동</h4>
+                    <ul class="plyo-list do">
+                        ${guide.doList.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="plyo-section dont">
+                    <h4>❌ 피해야 할 것</h4>
+                    <ul class="plyo-list dont">
+                        ${guide.dontList.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="plyo-section tips">
+                    <h4>💡 핵심 포인트</h4>
+                    <ul class="plyo-list neutral">
+                        ${guide.keyPoints.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="plyo-section exercises">
+                    <h4>📅 권장 빈도</h4>
+                    <span class="freq-badge ${guide.frequencyClass}">${guide.frequency}</span>
+                </div>
+
+                <div class="plyo-key-point ${guide.messageType}">
+                    <strong>📌 핵심 메시지:</strong><br>
+                    ${guide.mainMessage}
+                </div>
+            `;
+
+            document.getElementById('plyoContent').innerHTML = contentHtml;
+        }
+
+        function getDetailedRecommendations(age, offset, gender, sport) {
+            const recommendations = [];
+            
+            // 훈련 구조 권장
+            let trainingStructure;
+            if (age < 7) {
+                trainingStructure = '비구조적 (UNSTRUCTURED) - 놀이 중심의 자유로운 활동';
+            } else if (age < 12) {
+                trainingStructure = '낮은 구조 (LOW STRUCTURE) - 기본 기술 학습과 다양한 경험';
+            } else if (age < 15) {
+                trainingStructure = '중간 구조 (MODERATE STRUCTURE) - 체계적 기술 훈련 도입';
+            } else if (age < 18) {
+                trainingStructure = '높은 구조 (HIGH STRUCTURE) - 전문적 훈련 프로그램';
+            } else {
+                trainingStructure = '매우 높은 구조 (VERY HIGH STRUCTURE) - 완전한 전문화 훈련';
+            }
+            
+            recommendations.push({
+                category: '훈련 구조',
+                content: trainingStructure
+            });
+
+            // PHV 기반 권장사항
+            if (offset < -2) {
+                recommendations.push({
+                    category: '현재 단계',
+                    content: 'PHV 2년 이상 전 - 신경계 발달 최적기입니다. 다양한 움직임 경험과 기술 학습에 집중하세요.'
+                });
+                recommendations.push({
+                    category: '훈련 적응',
+                    content: '주로 신경계(Neural) 적응이 일어납니다. 복잡한 움직임 패턴과 협응력 훈련이 효과적입니다.'
+                });
+            } else if (offset < -1) {
+                recommendations.push({
+                    category: '현재 단계',
+                    content: 'PHV 1-2년 전 - 기술 습득의 마지막 황금기입니다. 스피드와 민첩성 훈련을 강화하세요.'
+                });
+            } else if (offset < 0) {
+                recommendations.push({
+                    category: '현재 단계',
+                    content: 'PHV 임박 - 급성장기 진입 중입니다. 유연성 훈련을 강화하고 부상 예방에 주의하세요.'
+                });
+                recommendations.push({
+                    category: '⚠️ 주의사항',
+                    content: '급성장기에는 근골격계 부상 위험이 높아집니다. ACWR(급성:만성 부하 비율) 모니터링을 권장합니다.'
+                });
+            } else if (offset < 1) {
+                recommendations.push({
+                    category: '현재 단계',
+                    content: 'PHV 직후 - 근력과 파워 발달의 최적기입니다. 호르몬 변화를 활용한 근력 훈련을 시작하세요.'
+                });
+                recommendations.push({
+                    category: '훈련 적응',
+                    content: '신경계와 호르몬 적응이 동시에 일어납니다. 점진적 부하 증가가 효과적입니다.'
+                });
+            } else {
+                recommendations.push({
+                    category: '현재 단계',
+                    content: 'PHV 1년 이상 경과 - 근비대와 지구력 발달의 최적기입니다. 전문화된 체력 훈련이 가능합니다.'
+                });
+                recommendations.push({
+                    category: '훈련 적응',
+                    content: '주로 호르몬(Hormonal) 적응이 일어납니다. 고강도 저항 훈련과 지구력 훈련이 효과적입니다.'
+                });
+            }
+
+            return recommendations;
+        }
+
+        function analyze() {
+            const name = document.getElementById('name').value;
+            const birthdate = document.getElementById('birthdate').value;
+            const height = parseFloat(document.getElementById('height').value);
+            const sittingHeight = parseFloat(document.getElementById('sittingHeight').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const fatherHeight = parseFloat(document.getElementById('fatherHeight').value);
+            const motherHeight = parseFloat(document.getElementById('motherHeight').value);
+            const sport = document.getElementById('sport').value;
+            const position = document.getElementById('position').value;
+
+            // Validation
+            if (!birthdate || !height || !sittingHeight || !weight) {
+                alert('생년월일, 신장, 앉은키, 체중은 필수 입력 항목입니다.');
+                return;
+            }
+
+            const age = calculateAge(birthdate);
+            
+            // 나이 범위 검증 (남자 9-18세, 여자 8-16세)
+            const minAge = selectedGender === 'male' ? 9 : 8;
+            const maxAge = selectedGender === 'male' ? 18 : 16;
+            
+            if (age < minAge || age > maxAge) {
+                alert(`PHV 예측은 ${selectedGender === 'male' ? '남자 9-18세' : '여자 8-16세'} 범위에서 가장 정확합니다. 현재 나이: ${age.toFixed(1)}세`);
+            }
+
+            // Calculate maturity offset
+            const maturityOffset = calculateMaturityOffset(age, height, sittingHeight, weight, selectedGender);
+            const predictedPHVAge = age - maturityOffset;
+            
+            // Calculate predicted adult height
+            let predictedAdultHeight = null;
+            if (fatherHeight && motherHeight) {
+                predictedAdultHeight = calculatePredictedAdultHeight(selectedGender, fatherHeight, motherHeight);
+            }
+            
+            // Estimate percent of adult height
+            let percentAdultHeight = null;
+            if (predictedAdultHeight) {
+                percentAdultHeight = (height / predictedAdultHeight) * 100;
+            }
+
+            // Get maturity status
+            const maturityStatus = getMaturityStatus(maturityOffset, selectedGender);
+
+            // Display results
+            document.getElementById('currentAge').textContent = age.toFixed(1) + '세';
+            document.getElementById('maturityOffset').textContent = maturityOffset.toFixed(2) + '년';
+            document.getElementById('predictedPHV').textContent = predictedPHVAge.toFixed(1) + '세';
+            document.getElementById('percentAdultHeight').textContent = percentAdultHeight ? percentAdultHeight.toFixed(1) + '%' : '-';
+            
+            const maturityStatusEl = document.getElementById('maturityStatus');
+            maturityStatusEl.textContent = maturityStatus.text;
+            maturityStatusEl.className = 'maturity-status ' + maturityStatus.class;
+
+            // Predicted adult height
+            document.getElementById('predictedAdultHeight').textContent = predictedAdultHeight ? 
+                predictedAdultHeight.toFixed(1) + ' cm' : '부모님 키 정보 필요';
+
+            // Development stage
+            const stageHtml = `
+                <div class="stage-card ${maturityOffset < -1 ? 'current' : ''}">
+                    <div class="stage-name">Pre-PHV</div>
+                    <div class="stage-value">${maturityOffset < -1 ? '현재 단계' : '완료'}</div>
+                </div>
+                <div class="stage-card ${maturityOffset >= -1 && maturityOffset <= 1 ? 'current' : ''}">
+                    <div class="stage-name">Around PHV</div>
+                    <div class="stage-value">${maturityOffset >= -1 && maturityOffset <= 1 ? '현재 단계' : (maturityOffset < -1 ? '예정' : '완료')}</div>
+                </div>
+                <div class="stage-card ${maturityOffset > 1 ? 'current' : ''}">
+                    <div class="stage-name">Post-PHV</div>
+                    <div class="stage-value">${maturityOffset > 1 ? '현재 단계' : '예정'}</div>
+                </div>
+            `;
+            document.getElementById('developmentStage').innerHTML = stageHtml;
+
+            // YPD Timeline marker
+            const markerPosition = ((age - 2) / 19) * 100; // 2세~21세 범위
+            const marker = document.getElementById('ageMarker');
+            marker.style.left = Math.min(Math.max(markerPosition, 5), 95) + '%';
+            marker.textContent = Math.round(age);
+
+            // Training priorities
+            const priorities = getYPDTrainingPriorities(age, maturityOffset, selectedGender);
+            const prioritiesHtml = priorities.map(p => `
+                <div class="priority-item ${p.level}">
+                    <div class="name">${p.name}</div>
+                    <div class="importance">${p.importance}</div>
+                </div>
+            `).join('');
+            document.getElementById('trainingPriorities').innerHTML = prioritiesHtml;
+
+            // PHV Warning
+            const phvWarning = document.getElementById('phvWarning');
+            if (maturityOffset >= -1 && maturityOffset <= 1) {
+                phvWarning.classList.remove('hidden');
+            } else {
+                phvWarning.classList.add('hidden');
+            }
+
+            // Detailed recommendations
+            const recommendations = getDetailedRecommendations(age, maturityOffset, selectedGender, sport);
+            const recsHtml = recommendations.map(r => `
+                <div style="margin-bottom: 15px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                    <div style="color: #00d9ff; font-weight: 600; margin-bottom: 5px;">${r.category}</div>
+                    <div style="color: #ccd6f6; font-size: 0.9rem; line-height: 1.6;">${r.content}</div>
+                </div>
+            `).join('');
+            document.getElementById('recommendations').innerHTML = recsHtml;
+
+            // Plyometric Guide
+            renderPlyometricGuide(maturityOffset);
+
+            // Show all result cards
+            document.getElementById('phvResult').classList.remove('hidden');
+            document.getElementById('ypdResult').classList.remove('hidden');
+            document.getElementById('plyoResult').classList.remove('hidden');
+            document.getElementById('recommendationResult').classList.remove('hidden');
+        }
+
+        // Set default date to reasonable value for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const defaultDate = new Date(today.getFullYear() - 14, today.getMonth(), today.getDate());
+            document.getElementById('birthdate').valueAsDate = defaultDate;
+        });
+    </script>
+</body>
+</html>
